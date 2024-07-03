@@ -45,7 +45,7 @@ const WalletProvider = ({ children }: { children: ReactNode }) => {
     try {
       await wallet?.requestPermissions({
         network: {
-          type: (import.meta.env.VITE_TEZOS_NETWORK_NAME ?? "ghostnet") as NetworkType,
+          type: (import.meta.env.VITE_TEZOS_NETWORK_NAME ?? "sandbox") as NetworkType,
           rpcUrl: import.meta.env.VITE_TEZOS_RPC,
         },
       })

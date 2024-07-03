@@ -19,5 +19,7 @@
     "@completium/archetype-ts-types": "^0.1.12"
   },
   "scripts": {
+    "container-setup": "sh backend/scripts/init.sh"
+
   }
 }

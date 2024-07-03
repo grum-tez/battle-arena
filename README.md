@@ -1,9 +1,15 @@
-Archetype - Vite - React dApp template devcontainer
+Battle Arena educational dapp
 
-I didn't get the flextesa sandbox to work - ghostnet is much easier and more similair to production so I would recommend that generally. 
+A few final setup commands that must be run in an interactive shell:
 
-Before running tests you must:
+```
+echo 'alias ccli="npx completium-cli"' >> ~/.bashrc
+source ~/.bashrc
+nvm install 16
+nvm use 16
+ccli mockup init
+```
 
-npx completium-cli mockup init
+Sandbox resource:
 
-If you are working with the
+https://claudebarde.medium.com/flextesa-the-swiss-army-knife-of-development-on-tezos-f2783fad966e

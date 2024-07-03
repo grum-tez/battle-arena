@@ -6,6 +6,8 @@ sudo apt-get update -y
 sudo apt-get install -y tezos-client
 yarn install
 npx completium-cli init
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
 python -m pip install aider-chat
 # playwright for enabling aider web-scraping for adding documentation to context
 # playwright install --with-deps chromium

@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 export default defineConfig({
-  base: '/pyTezosDC/', // Set the base path to your repository name
+  base: '/battle-arena/', // Set the base path to your repository name
   resolve: {
     alias: {
       util: 'util/', // Ensure this alias is correctly set
