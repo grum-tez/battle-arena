@@ -7,6 +7,7 @@ echo 'alias ccli="npx completium-cli"' >> ~/.bashrc
 source ~/.bashrc
 nvm install 16
 nvm use 16
+ccli init
 ccli mockup init
 ```
 
