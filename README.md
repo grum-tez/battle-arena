@@ -14,3 +14,7 @@ ccli mockup init
 Sandbox resource:
 
 https://claudebarde.medium.com/flextesa-the-swiss-army-knife-of-development-on-tezos-f2783fad966e
+
+TODO: 
+
+- Update pages deployment to always run yarn g:update from backend before deployment so that the environment variables always refer to a ghostnet contract. More robust solution preferable but that should work. That will also need to run with node version 16 to work.
