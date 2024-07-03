@@ -1,0 +1,47 @@
+.battle-arena-title {
+  text-align: center;
+  margin: 20px auto;
+  background: linear-gradient(45deg, #ff4136, #ff851b);
+  padding: 30px 20px;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  max-width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.christmas-theme .battle-arena-title {
+  background: url('https://i.pinimg.com/originals/b0/b1/07/b0b107754d4f5e424fc901d8a94357d0.gif');
+  background-size: cover;
+  border: 10px solid #ff0000;
+  box-shadow: 0 0 30px #00ff00, 0 0 50px #0000ff;
+  animation: blink 0.5s infinite alternate;
+}
+
+@keyframes blink {
+  0% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+.battle-arena-title h1 {
+  font-size: 70px;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+  margin: 0 0 15px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.battle-arena-title h2 {
+  font-size: 22px;
+  color: #f0f0f0;
+  font-style: italic;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+  margin: 0;
+  line-height: 1.2;
+}

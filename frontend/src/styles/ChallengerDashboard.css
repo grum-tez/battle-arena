@@ -1,0 +1,29 @@
+.challenger-dashboard {
+  padding: 20px;
+}
+
+.challenger-dashboard p {
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.challenger-dashboard button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #ff4136;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.challenger-dashboard button:hover {
+  background-color: #ff851b;
+}
+
+.change-fighter-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}

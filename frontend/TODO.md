@@ -1,0 +1,6 @@
+- Fix the inevitable bugs that will arise from adding the change name entrypoint. 
+- Add challenger name to the register_challenger event and how that connects to the dapp. Also how the fight_history state is handled needs to be updated.
+- Figure out what is going on with google chrome "dark mode"
+- For some reason I can't enter the arena again even after choosing a new fighter - why not?
+- Add functionality for changing name in the dApp, but where it appends "the loser face" to whatever name you give.
+- Add a new task, quite early on in the tasks, where you call the change_name function within better-call.dev to fix your loser face name.

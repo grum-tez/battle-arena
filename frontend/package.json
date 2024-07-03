@@ -1,0 +1,49 @@
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "homepage": "https://grum-tez.github.io/pyTezosDC",
+
+  "scripts": {
+    "dev": "vite",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+
+  },
+  "dependencies": {
+    "@completium/event-listener": "^0.0.5",
+    "@mui/icons-material": "^5.15.20",
+    "@mui/material": "^5.15.20",
+    "@taquito/beacon-wallet": "^20.0.0",
+    "@taquito/michel-codec": "^20.0.0",
+    "@taquito/michelson-encoder": "^20.0.0",
+    "@taquito/signer": "^20.0.0",
+    "@taquito/taquito": "^20.0.0",
+    "@taquito/utils": "^20.0.0",
+    "buffer": "^6.0.3",
+    "constate": "^3.3.2",
+    "crypto-browserify": "^3.12.0",
+    "os-browserify": "^0.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "typescript": "^5.4.5",
+    "url": "^0.11.3",
+    "util": "^0.12.5"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "vite": "^5.2.0",
+    "vite-plugin-node-polyfills": "^0.22.0"
+  }
+}

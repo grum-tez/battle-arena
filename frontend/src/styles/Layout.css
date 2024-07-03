@@ -1,0 +1,27 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 1600px; /* Restrict the horizontal width */
+  margin: 0 auto; /* Center the container */
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+  .app-container {
+    flex-direction: row;
+  }
+
+  .learning-dash {
+    width: 30%;
+  }
+
+  .main-content {
+    width: 70%;
+  }
+}

@@ -1,0 +1,153 @@
+
+.fighter-options-row {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: nowrap;
+  gap: 30px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.christmas-theme .fighter-options-row {
+  background-image: url('https://i.pinimg.com/originals/18/31/3e/18313e854292321f5662be52b61b51cd.gif');
+  background-size: cover;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.christmas-theme .fighter-option {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 5px solid #00ff00;
+  box-shadow: 0 0 15px #ff0000, 0 0 25px #0000ff;
+}
+
+.christmas-theme .fighter-option.selected {
+  border: 5px solid #ff0000;
+  box-shadow: 0 0 30px #ffff00, 0 0 50px #ff00ff;
+}
+
+.christmas-theme .btn {
+  background-color: #ff0000;
+  color: #ffffff;
+  font-weight: bold;
+  text-shadow: 2px 2px #000000;
+  animation: crazyJiggle 1s infinite;
+  box-shadow: 0 0 15px #ffff00, 0 0 25px #00ff00;
+  transition: all 0.3s ease;
+}
+
+.christmas-theme .btn:hover {
+  background-color: #00ff00;
+  color: #ff0000;
+  transform: scale(1.1) rotate(-3deg);
+}
+
+@keyframes crazyJiggle {
+  0% { transform: rotate(-5deg) scale(1); }
+  25% { transform: rotate(10deg) scale(1.1); }
+  50% { transform: rotate(-8deg) scale(0.9); }
+  75% { transform: rotate(12deg) scale(1.2); }
+  100% { transform: rotate(-5deg) scale(1); }
+}
+
+.fighter-option {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  border: 1px solid #ccc;
+  overflow: hidden;
+  width: 300px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  padding: 30px 25px 15px;
+  box-sizing: border-box;
+}
+
+.fighter-option.registered {
+  transform: scale(1.1);
+  background-color: #ffded6; /* New subtle background shading */
+}
+
+.fighter-option.selected {
+  border: 2px solid #ff4136; /* Glowing orangey-red border */
+  box-shadow: 0 0 10px #ff4136;
+}
+
+.fighter-option:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+
+.fighter-image-container {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  border: 2px solid #000;
+  overflow: hidden;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.fighter-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fighter-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.fighter-info h4 {
+  margin: 10px 0 5px;
+}
+
+.fighter-info p {
+  margin: 0;
+}
+
+.arena-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #ff4136;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #ff851b;
+}
+
+.btn:disabled {
+  background-color: #ffded6;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.return-btn {
+  background-color: #ff851b;
+}
+
+.return-btn:hover {
+  background-color: #ff4136;
+}

@@ -1,0 +1,142 @@
+archetype battlemaster (
+  battle_master_fighter_id : nat
+)
+
+asset fighters_map {
+  fighter_id : nat;
+  name : string;
+  strength: nat;
+  hidden: bool;
+  ipfsHash: string
+} initialized with {
+    {fighter_id = 1; name = "gnat"; strength = 1; hidden = false; ipfsHash = "QmWAKjX1LUnb3v2jQJ3Zd9Gu32tFAewwtjZuABfczs6Mj2"};
+    {fighter_id = 2; name = "mouse"; strength = 4; hidden = false; ipfsHash = "QmbpMjbgsFMaLVmtgJf1AdXRXwppJmuG5NGU44Bp9jqsKd"};
+    {fighter_id = 3; name = "termite"; strength = 2; hidden = false; ipfsHash = "QmRdCMxLtUCRNtiwpLsePFZ6QAAiZPtNxDUMUsvZuxoXeC"};
+    {fighter_id = 4; name = "skunk"; strength = 3; hidden = false; ipfsHash = "QmNt7Xet8oLebiPeRTZCp4qF3CjhWG4itgpw9ZJmpywGz3"};
+    {fighter_id = 5; name = "sloth"; strength = 10; hidden = false; ipfsHash = "QmSXByNYCu3VoF2Q6m9Gy8xugp7Va4XsuUvSMaMSjUD1ou"};
+    {fighter_id = 6; name = "dragon"; strength = 1000; hidden = true; ipfsHash = "QmPPW2Rg1GYoBbXbMbsh3Mk6m9BagdiVjcRpoLyxDkkFbc"};
+    {fighter_id = 7; name = "nano-bots"; strength = 100000; hidden = true; ipfsHash = "QmNutTRBNYoqCCmXCD1xkvQqNhY5DZBupcqUJhxSV3uHK1"}
+}
+
+record fight_record {
+  fight_timestamp : date;
+  battlemaster_victorious : bool;
+  battlemaster_fighter_id: nat;
+  battlemaster_fighter_name : string;
+  challenger_fighter_id: nat;
+  challenger_fighter_name : string;
+}
+
+asset challengers_big_map to big_map {
+  challenger_id : address;
+  chosen_fighter_id : nat;
+  fightHistory : list<fight_record> = [];
+  fightCount: nat = 0;
+  c_mode: nat = 0
+}
+
+entry toggle_c_mode() {
+  require {
+    toggle_c_mode_r1: challengers_big_map.contains(caller) otherwise "You can't change the mode of a user who is not registered";
+  }
+  effect {
+    const challenger_map_before_option = challengers_big_map[caller];
+    const challenger_map_before ?= challenger_map_before_option;
+    const c_mode_before = challenger_map_before.c_mode;
+    const c_mode_after = c_mode_before + 1;
+    challengers_big_map.update(caller, {
+      c_mode = c_mode_after
+    });
+    emit<c_mode_updated>({
+      caller;
+      c_mode_after
+    })
+  }
+}
+
+  event c_mode_updated {
+  challenger_elf: address;
+  c_mode_on: nat;
+  }
+
+entry register_challenger(fighter_id_requested : nat) {
+  require {
+    register_challenger_r1: fighters_map.contains(fighter_id_requested) otherwise "There is no fighter with the requested id.";
+  }
+  effect {
+  challengers_big_map.add_update( caller, {
+    chosen_fighter_id = fighter_id_requested;
+    fightCount += 0;
+    c_mode += 0
+
+  });
+  const this_new_challenger_record_option = challengers_big_map[caller];
+  const this_new_challenger_record ?=  this_new_challenger_record_option : ("That challenger has not been registered");
+
+  const n_ca: address = caller;
+  const f_id: nat = this_new_challenger_record.chosen_fighter_id;
+  const c_fh: list<fight_record> = this_new_challenger_record.fightHistory;
+  const c_fc: nat =  this_new_challenger_record.fightCount;
+  const c_cm: nat = this_new_challenger_record.c_mode;
+
+  emit<new_challenger_registered>({
+    n_ca
+    ;f_id
+    ;c_fh
+    ;c_fc
+    ;c_cm
+    })
+  }
+
+}
+event new_challenger_registered {
+  new_challenger_address: address
+  ;new_challenger_fighter_id: nat
+  ;new_challenger_fight_history: list<fight_record>
+  ;new_challenger_fight_count: nat
+  ;new_challenger_c_mode: nat
+}
+
+
+
+entry fight() {
+  require {
+    fight_r1: challengers_big_map.contains(caller) otherwise "You are not a registered challenger.";
+  }
+  effect {
+    // Retrieve details for battlemaster's fighter
+    const battlemaster_fighter_record ?= fighters_map[battle_master_fighter_id];
+
+    // Retrieve details for challenger's fighter
+    const challenger ?= challengers_big_map[caller];
+    do_fail_if(challenger.fightCount > 100, "No challenger may feed more than 100 fighters to the dragon");
+    const challenger_fighter_record ?= fighters_map[challenger.chosen_fighter_id];
+    const battlemaster_is_winner = battlemaster_fighter_record.strength > challenger_fighter_record.strength;
+
+    // Create a fight record
+    const this_fight_record = {
+      fight_timestamp = now;
+      battlemaster_victorious = battlemaster_is_winner;
+      battlemaster_fighter_id = battle_master_fighter_id;
+      battlemaster_fighter_name = battlemaster_fighter_record.name;
+      challenger_fighter_id = challenger.chosen_fighter_id;
+      challenger_fighter_name = challenger_fighter_record.name
+    };
+
+  
+    // Update the challenger's fight history and fight count
+    challengers_big_map.update(caller, {
+      chosen_fighter_id = challenger.chosen_fighter_id;
+      fightHistory = fightHistory.prepend(this_fight_record);
+      fightCount += 1
+    });
+    emit<new_fight_recorded>({caller ; this_fight_record})
+  }
+}
+
+event new_fight_recorded {
+  challenger_address: address;
+  new_fight_record: fight_record;
+}
+
+variable count : nat = 0
