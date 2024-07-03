@@ -24,7 +24,7 @@ const FightZone: React.FC = () => {
         <div className="fighter-image-container">
           {challenger ? (
             <img
-              src={`/images/fighters/${fighters[Number(challenger.chosen_fighter_id)].name}.jpg`}
+              src={`${import.meta.env.BASE_URL}/images/fighters/${fighters[Number(challenger.chosen_fighter_id)].name}.jpg`}
               onError={(e) => { e.currentTarget.src = `https://ipfs.io/ipfs/${fighters[Number(challenger.chosen_fighter_id)].ipfsHash}`; e.currentTarget.onerror = null; }}
               alt={`Fighter ${fighters[Number(challenger.chosen_fighter_id)].name}`}
               className="fighter-image"
@@ -46,7 +46,7 @@ const FightZone: React.FC = () => {
       <div className="fighter-card">
         <div className="fighter-image-container">
           <img
-            src={`/images/fighters/dragon.jpg`}
+            src={`${import.meta.env.BASE_URL}/images/fighters/dragon.jpg`}
             onError={(e) => { e.currentTarget.src = `https://ipfs.io/ipfs/QmPPW2Rg1GYoBbXbMbsh3Mk6m9BagdiVjcRpoLyxDkkFbc`; e.currentTarget.onerror = null; }}
             alt="Battlemaster's Fighter"
             className="fighter-image"
