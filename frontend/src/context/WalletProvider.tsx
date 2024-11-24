@@ -5,7 +5,8 @@ import {
   useMemo,
   useState,
 } from "react"
-import { AccountInfo, NetworkType, ColorMode, BeaconEvent } from "@airgap/beacon-types"
+import { AccountInfo, NetworkType, ColorMode } from "@airgap/beacon-types"
+import { BeaconEvent } from "@airgap/beacon-sdk"
 import { TezosToolkit } from "@taquito/taquito"
 import { BeaconWallet } from "@taquito/beacon-wallet"
 import { set_binder_tezos_toolkit } from "@completium/dapp-ts"
@@ -23,7 +24,8 @@ const WalletProvider = ({ children }: { children: ReactNode }) => {
   }, [account])
 
   useEffect(() => {
-    if (!Tezos) {
+    const initWallet = async () => {
+      if (!Tezos) {
       const Tezos = new TezosToolkit(
         import.meta.env.VITE_TEZOS_RPC ?? "localhost:20000"
       )
@@ -54,7 +56,9 @@ const WalletProvider = ({ children }: { children: ReactNode }) => {
       setAccount(activeAccount)
       setTezos(Tezos)
       setWallet(beacon)
+      }
     }
+    initWallet()
   }, [Tezos])
 
   const connect = useCallback(async () => {
@@ -85,7 +89,11 @@ const WalletProvider = ({ children }: { children: ReactNode }) => {
   // Cleanup subscriptions on unmount
   useEffect(() => {
     return () => {
-      wallet?.client.removeAllListeners()
+      if (wallet?.client) {
+        // Unsubscribe from specific events we subscribed to
+        wallet.client.removeEventListener(BeaconEvent.PAIR_SUCCESS)
+        wallet.client.removeEventListener(BeaconEvent.ACTIVE_ACCOUNT_SET)
+      }
     }
   }, [wallet])
 
