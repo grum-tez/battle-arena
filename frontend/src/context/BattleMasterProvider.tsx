@@ -56,7 +56,7 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
       if (!battleMasterContract || !account || !account.address) { return }
-      console.log("starting listener")
+      console.log("[Event Listener] Initializing event listener setup at:", new Date().toISOString())
       const startListener = async () => {
 
         battleMasterContract.register_new_challenger_registered(async (t) => {
@@ -154,10 +154,14 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
           });
         });
 
+        console.log("[Event Listener] Starting run_listener");
         await run_listener({
           endpoint: import.meta.env.VITE_TEZOS_RPC,
           verbose: false,
-          horizon: 0
+          horizon: 0,
+          callback: () => {
+            console.log("[Event Listener] Checking for events at:", new Date().toISOString());
+          }
         })
       }
       startListener()
