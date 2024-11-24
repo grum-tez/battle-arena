@@ -5,7 +5,7 @@ import {
   useMemo,
   useState,
 } from "react"
-import { AccountInfo, NetworkType, ColorMode } from "@airgap/beacon-types"
+import { AccountInfo, NetworkType, ColorMode, BeaconEvent } from "@airgap/beacon-types"
 import { TezosToolkit } from "@taquito/taquito"
 import { BeaconWallet } from "@taquito/beacon-wallet"
 import { set_binder_tezos_toolkit } from "@completium/dapp-ts"
@@ -35,7 +35,23 @@ const WalletProvider = ({ children }: { children: ReactNode }) => {
       })
       Tezos.setWalletProvider(beacon)
       set_binder_tezos_toolkit(Tezos)
-      beacon.client.getActiveAccount().then(setAccount)
+
+      // Clear any existing account on init
+      await beacon.clearActiveAccount()
+      
+      // Subscribe to pairing success
+      beacon.client.subscribeToEvent(BeaconEvent.PAIR_SUCCESS, (data) => {
+        console.log(`${BeaconEvent.PAIR_SUCCESS} triggered:`, data)
+      })
+
+      // Subscribe to active account changes
+      beacon.client.subscribeToEvent(BeaconEvent.ACTIVE_ACCOUNT_SET, (account) => {
+        console.log("Active account changed:", account)
+        setAccount(account)
+      })
+
+      const activeAccount = await beacon.client.getActiveAccount()
+      setAccount(activeAccount)
       setTezos(Tezos)
       setWallet(beacon)
     }
@@ -58,10 +74,19 @@ const WalletProvider = ({ children }: { children: ReactNode }) => {
   }, [wallet])
 
   const disconnect = useCallback(async () => {
-    await wallet?.clearActiveAccount()
-    await wallet?.disconnect()
-    setAccount(undefined)
-    setBalance(0)
+    if (wallet) {
+      await wallet.client.removeAllAccounts()
+      await wallet.disconnect()
+      setAccount(undefined)
+      setBalance(0)
+    }
+  }, [wallet])
+
+  // Cleanup subscriptions on unmount
+  useEffect(() => {
+    return () => {
+      wallet?.client.removeAllListeners()
+    }
   }, [wallet])
 
   const getBalance = useCallback(async () => {
