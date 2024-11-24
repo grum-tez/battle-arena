@@ -111,7 +111,7 @@ entry fight() {
     const challenger ?= challengers_big_map[caller];
     do_fail_if(challenger.fightCount > 100, "No challenger may feed more than 100 fighters to the dragon");
     const challenger_fighter_record ?= fighters_map[challenger.chosen_fighter_id];
-    const battlemaster_is_winner = battlemaster_fighter_record.strength > challenger_fighter_record.strength;
+    const battlemaster_is_winner = battlemaster_fighter_record.strength >= challenger_fighter_record.strength;
 
     // Create a fight record
     const this_fight_record = {
@@ -140,3 +140,17 @@ event new_fight_recorded {
 }
 
 variable count : nat = 0
+
+entry reset_challenger() {
+  require {
+    reset_challenger_r1: challengers_big_map.contains(caller) otherwise "Challenger not found.";
+  }
+  effect {
+    challengers_big_map.remove(caller);
+    emit<challenger_reset>({caller});
+  }
+}
+
+event challenger_reset {
+  challenger_address: address;
+}

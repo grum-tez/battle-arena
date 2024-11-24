@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://grum-tez.github.io/pyTezosDC",
+  "homepage": "https://grum-tez.github.io/battle-arena",
 
   "scripts": {
     "dev": "vite",

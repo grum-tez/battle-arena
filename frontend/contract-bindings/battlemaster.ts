@@ -86,6 +86,21 @@ export class new_fight_recorded implements att.ArchetypeType {
         return new new_fight_recorded(challenger_address, new_fight_record);
     }
 }
+export class challenger_reset implements att.ArchetypeType {
+    constructor(public challenger_address: att.Address) { }
+    toString(): string {
+        return JSON.stringify(this, null, 2);
+    }
+    to_mich(): att.Micheline {
+        return this.challenger_address.to_mich();
+    }
+    equals(v: challenger_reset): boolean {
+        return this.challenger_address.equals(v.challenger_address);
+    }
+    static from_mich(input: att.Micheline): challenger_reset {
+        return new challenger_reset(att.Address.from_mich(input));
+    }
+}
 export class fight_record implements att.ArchetypeType {
     constructor(public fight_timestamp: Date, public battlemaster_victorious: boolean, public battlemaster_fighter_id: att.Nat, public battlemaster_fighter_name: string, public challenger_fighter_id: att.Nat, public challenger_fighter_name: string) { }
     toString(): string {
@@ -238,6 +253,9 @@ const register_challenger_arg_to_mich = (fighter_id_requested: att.Nat): att.Mic
 const fight_arg_to_mich = (): att.Micheline => {
     return att.unit_mich;
 }
+const reset_challenger_arg_to_mich = (): att.Micheline => {
+    return att.unit_mich;
+}
 export class Battlemaster {
     address: string | undefined;
     constructor(address: string | undefined = undefined) {
@@ -273,6 +291,12 @@ export class Battlemaster {
         }
         throw new Error("Contract not initialised");
     }
+    async reset_challenger(params: Partial<ex.Parameters>): Promise<att.CallResult> {
+        if (this.address != undefined) {
+            return await ex.call(this.address, "reset_challenger", reset_challenger_arg_to_mich(), params);
+        }
+        throw new Error("Contract not initialised");
+    }
     async get_toggle_c_mode_param(params: Partial<ex.Parameters>): Promise<att.CallParameter> {
         if (this.address != undefined) {
             return await ex.get_call_param(this.address, "toggle_c_mode", toggle_c_mode_arg_to_mich(), params);
@@ -288,6 +312,12 @@ export class Battlemaster {
     async get_fight_param(params: Partial<ex.Parameters>): Promise<att.CallParameter> {
         if (this.address != undefined) {
             return await ex.get_call_param(this.address, "fight", fight_arg_to_mich(), params);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_reset_challenger_param(params: Partial<ex.Parameters>): Promise<att.CallParameter> {
+        if (this.address != undefined) {
+            return await ex.get_call_param(this.address, "reset_challenger", reset_challenger_arg_to_mich(), params);
         }
         throw new Error("Contract not initialised");
     }
@@ -374,7 +404,20 @@ export class Battlemaster {
         }
         throw new Error("Contract not initialised");
     }
+    register_challenger_reset(ep: el.EventProcessor<challenger_reset>) {
+        if (this.address != undefined) {
+            el.registerEvent({ source: this.address, filter: tag => { return tag == "challenger_reset"; }, process: (raw: any, data: el.EventData | undefined) => {
+                    const event = (x => {
+                        return challenger_reset.from_mich((att.normalize(x) as att.Micheline));
+                    })(raw);
+                    ep(event, data);
+                } });
+            return;
+        }
+        throw new Error("Contract not initialised");
+    }
     errors = {
+        reset_challenger_r1: att.string_to_mich("\"Challenger not found.\""),
         OPTION_IS_NONE: att.string_to_mich("\"OPTION_IS_NONE\""),
         NO_CHALLENGER_MAY_FEED_MORE_THAN_100_FIGHTERS_TO_THE_DRAGON: att.string_to_mich("\"No challenger may feed more than 100 fighters to the dragon\""),
         fight_r1: att.string_to_mich("\"You are not a registered challenger.\""),
