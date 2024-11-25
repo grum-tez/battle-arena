@@ -157,7 +157,7 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
         console.log("[Event Listener] Starting run_listener at:", new Date().toISOString());
         await run_listener({
           endpoint: import.meta.env.VITE_TEZOS_RPC,
-          verbose: true,  // This will enable built-in logging
+          verbose: false,
           horizon: 0
         })
       }
