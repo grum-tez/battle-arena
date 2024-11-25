@@ -40,7 +40,7 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
             const fetchedChallenger = await battleMasterContract.get_challengers_big_map_value(new Address(account.address));
             setChallenger(fetchedChallenger);
             if (fetchedChallenger) {
-              console.log("Fetched Challenger: ", fetchedChallenger);
+              // console.log("Fetched Challenger: ", fetchedChallenger);
             }
           }
         } catch (e) {
@@ -61,14 +61,13 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
 
         battleMasterContract.register_new_challenger_registered(async (t) => {
           console.log("Event detected. New challenger registered: ", t)
-
-          console.log(t.new_challenger_address.toString())
-          console.log(t.new_challenger_fighter_id.toString())
-          console.log(t.new_challenger_fight_history.toString())
-          console.log(t.new_challenger_fight_count.toString())
-          console.log("Account: ", account)
-          console.log("Wallet Address: ", account?.address)
-          console.log(account && account.address === t.new_challenger_address.toString())
+          // console.log(t.new_challenger_address.toString())
+          // console.log(t.new_challenger_fighter_id.toString())
+          // console.log(t.new_challenger_fight_history.toString())
+          // console.log(t.new_challenger_fight_count.toString())
+          // console.log("Account: ", account)
+          // console.log("Wallet Address: ", account?.address)
+          // console.log(account && account.address === t.new_challenger_address.toString())
 
           if (account && account.address === t.new_challenger_address.toString()) {
             const updatedChallenger = new challengers_big_map_value(
@@ -77,7 +76,7 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
                 t.new_challenger_fight_count, 
                 t.new_challenger_c_mode
             );
-            console.log("updating challenger from event")
+            // console.log("updating challenger from event")
             setChallenger(updatedChallenger)
           }
         });
@@ -86,11 +85,11 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
           console.log("Fight event detected.", t);
 
           if (!account || account.address !== t.challenger_address.toString()) {
-            console.log("Account does not match the challenger address. Doing nothing.");
+            // console.log("Account does not match the challenger address. Doing nothing.");
             return;
           }
 
-          console.log("Account matches the challenger address.");
+          // console.log("Account matches the challenger address.");
 
           const incoming_fight_record = t.new_fight_record
 
@@ -99,22 +98,22 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
             console.log("Previous Challenger: ", prevChallenger);
             if (prevChallenger) {
               const currentFightHistory = prevChallenger.fightHistory;
-              console.log("Current Fight History: ", currentFightHistory);
+              // console.log("Current Fight History: ", currentFightHistory);
               if (currentFightHistory.length > 0) {
                 const firstFightRecord = currentFightHistory[0];
-                console.log("First Fight Record: ", firstFightRecord);
-                console.log("First Fight Record Timestamp: ", firstFightRecord.fight_timestamp.toISOString());
-                console.log("Incoming Fight Record Timestamp: ", incoming_fight_record.fight_timestamp.toISOString());
+                // console.log("First Fight Record: ", firstFightRecord);
+                // console.log("First Fight Record Timestamp: ", firstFightRecord.fight_timestamp.toISOString());
+                // console.log("Incoming Fight Record Timestamp: ", incoming_fight_record.fight_timestamp.toISOString());
                 if (firstFightRecord.fight_timestamp.getTime() === incoming_fight_record.fight_timestamp.getTime()) {
-                  console.log("Timestamps are the same. Doing nothing.");
+                  // console.log("Timestamps are the same. Doing nothing.");
                   return prevChallenger; // Do nothing if timestamps are the same
                 }
-                console.log("Timestamps are not the same")
+                // console.log("Timestamps are not the same")
               }
               if (currentFightHistory.length === 0 || incoming_fight_record.fight_timestamp > currentFightHistory[0].fight_timestamp) {
-                console.log("Incoming fight timestamp is more recent. Prepending new fight record.");
+                // console.log("Incoming fight timestamp is more recent. Prepending new fight record.");
                 const updatedFightHistory = [incoming_fight_record, ...currentFightHistory];
-                console.log("Updated Fight History: ", updatedFightHistory);
+                // console.log("Updated Fight History: ", updatedFightHistory);
                 return new challengers_big_map_value(
                   prevChallenger.chosen_fighter_id,
                   updatedFightHistory,
@@ -142,18 +141,18 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         battleMasterContract.register_c_mode_updated(async (t) => {
-          console.log("C-Mode update event detected.", t);
+          // console.log("C-Mode update event detected.", t);
 
           if (!account || account.address !== t.challenger_elf.toString()) {
             console.log("Account does not match the challenger address. Doing nothing.");
             return;
           }
 
-          console.log("Account matches the challenger address.");
+          // console.log("Account matches the challenger address.");
 
           setChallenger(prevChallenger => {
             if (prevChallenger) {
-              console.log("Updating C-Mode for challenger.");
+              // console.log("Updating C-Mode for challenger.");
               return new challengers_big_map_value(
                 prevChallenger.chosen_fighter_id,
                 prevChallenger.fightHistory,
@@ -161,7 +160,7 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
                 t.c_mode_on
               );
             }
-            console.log("No previous challenger. Cannot update C-Mode.");
+            // console.log("No previous challenger. Cannot update C-Mode.");
             return prevChallenger;
           });
         });

@@ -6,7 +6,6 @@ import {
   useState,
 } from "react"
 import { AccountInfo, NetworkType, ColorMode } from "@airgap/beacon-types"
-import { BeaconEvent } from "@airgap/beacon-sdk"
 import { TezosToolkit } from "@taquito/taquito"
 import { BeaconWallet } from "@taquito/beacon-wallet"
 import { set_binder_tezos_toolkit } from "@completium/dapp-ts"
@@ -24,8 +23,7 @@ const WalletProvider = ({ children }: { children: ReactNode }) => {
   }, [account])
 
   useEffect(() => {
-    const initWallet = async () => {
-      if (!Tezos) {
+    if (!Tezos) {
       const Tezos = new TezosToolkit(
         import.meta.env.VITE_TEZOS_RPC ?? "localhost:20000"
       )
@@ -37,28 +35,10 @@ const WalletProvider = ({ children }: { children: ReactNode }) => {
       })
       Tezos.setWalletProvider(beacon)
       set_binder_tezos_toolkit(Tezos)
-
-      // Clear any existing account on init
-      await beacon.clearActiveAccount()
-      
-      // Subscribe to pairing success
-      beacon.client.subscribeToEvent(BeaconEvent.PAIR_SUCCESS, (data) => {
-        console.log(`${BeaconEvent.PAIR_SUCCESS} triggered:`, data)
-      })
-
-      // Subscribe to active account changes
-      beacon.client.subscribeToEvent(BeaconEvent.ACTIVE_ACCOUNT_SET, (account) => {
-        console.log("Active account changed:", account)
-        setAccount(account)
-      })
-
-      const activeAccount = await beacon.client.getActiveAccount()
-      setAccount(activeAccount)
+      beacon.client.getActiveAccount().then(setAccount)
       setTezos(Tezos)
       setWallet(beacon)
-      }
     }
-    initWallet()
   }, [Tezos])
 
   const connect = useCallback(async () => {
@@ -78,23 +58,10 @@ const WalletProvider = ({ children }: { children: ReactNode }) => {
   }, [wallet])
 
   const disconnect = useCallback(async () => {
-    if (wallet) {
-      await wallet.client.removeAllAccounts()
-      await wallet.disconnect()
-      setAccount(undefined)
-      setBalance(0)
-    }
-  }, [wallet])
-
-  // Cleanup subscriptions on unmount
-  useEffect(() => {
-    return () => {
-      if (wallet?.client) {
-        // Unsubscribe from specific events we subscribed to
-        wallet.client.removeEventListener(BeaconEvent.PAIR_SUCCESS)
-        wallet.client.removeEventListener(BeaconEvent.ACTIVE_ACCOUNT_SET)
-      }
-    }
+    await wallet?.clearActiveAccount()
+    await wallet?.disconnect()
+    setAccount(undefined)
+    setBalance(0)
   }, [wallet])
 
   const getBalance = useCallback(async () => {
