@@ -141,16 +141,16 @@ event new_fight_recorded {
 
 variable count : nat = 0
 
-entry reset_challenger() {
+entry reset_activity() {
   require {
     reset_challenger_r1: challengers_big_map.contains(caller) otherwise "Challenger not found.";
   }
   effect {
     challengers_big_map.remove(caller);
-    emit<challenger_reset>({caller});
+    emit<activity_reset>({caller});
   }
 }
 
-event challenger_reset {
+event activity_reset {
   challenger_address: address;
 }
