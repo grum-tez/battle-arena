@@ -131,6 +131,11 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
 
         battleMasterContract.register_activity_reset(async (t) => {
           console.log("Activity reset event detected.", t);
+          if (!account || account.address !== t.challenger_address.toString() || challenger === null) {
+            console.log("Account does not match the challenger address or challenger is already null. Doing nothing.");
+            return;
+          }
+          console.log("Account matches the challenger address and challenger exists. Processing reset.");
           alert(`Activity reset for account - ${t.challenger_address.toString()}`);
           setChallenger(null);  // Reset the challenger state
           await fetchChallenger();  // Refresh the challenger data
