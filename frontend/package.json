@@ -3,16 +3,15 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://grum-tez.github.io/pyTezosDC",
-
+  "homepage": "https://grum-tez.github.io/battle-arena",
   "scripts": {
     "dev": "vite",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "build": "tsc && vite build",
     "preview": "vite preview"
-
   },
   "dependencies": {
+    "@airgap/beacon-sdk": "^4.3.1",
     "@completium/event-listener": "^0.0.5",
     "@mui/icons-material": "^5.15.20",
     "@mui/material": "^5.15.20",

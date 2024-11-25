@@ -64,7 +64,7 @@ export class new_fight_recorded implements att.ArchetypeType {
         return att.micheline_equals(this.to_mich(), v.to_mich());
     }
     static from_mich(input: att.Micheline): new_fight_recorded {
-        console.log("new_fight_recorded.from_mich input:", JSON.stringify(input, null, 2));
+        // console.log("new_fight_recorded.from_mich input:", JSON.stringify(input, null, 2));
 
         let args: att.Micheline[];
         if (Array.isArray(input)) {
@@ -73,17 +73,32 @@ export class new_fight_recorded implements att.ArchetypeType {
             args = (input as att.Mpair).args;
         }
 
-        console.log("new_fight_recorded.from_mich args:", JSON.stringify(args, null, 2));
+        // console.log("new_fight_recorded.from_mich args:", JSON.stringify(args, null, 2));
 
         const challenger_address = att.Address.from_mich(args[0]);
         const new_fight_record = fight_record.from_mich(att.pair_to_mich(args.slice(1)));
 
-        console.log("new_fight_recorded.from_mich parsed:", {
-            challenger_address: challenger_address.toString(),
-            new_fight_record: JSON.stringify(new_fight_record, null, 2)
-        });
+        // console.log("new_fight_recorded.from_mich parsed:", {
+        //     challenger_address: challenger_address.toString(),
+        //     new_fight_record: JSON.stringify(new_fight_record, null, 2)
+        // });
 
         return new new_fight_recorded(challenger_address, new_fight_record);
+    }
+}
+export class activity_reset implements att.ArchetypeType {
+    constructor(public challenger_address: att.Address) { }
+    toString(): string {
+        return JSON.stringify(this, null, 2);
+    }
+    to_mich(): att.Micheline {
+        return this.challenger_address.to_mich();
+    }
+    equals(v: activity_reset): boolean {
+        return this.challenger_address.equals(v.challenger_address);
+    }
+    static from_mich(input: att.Micheline): activity_reset {
+        return new activity_reset(att.Address.from_mich(input));
     }
 }
 export class fight_record implements att.ArchetypeType {
@@ -98,7 +113,7 @@ export class fight_record implements att.ArchetypeType {
         return att.micheline_equals(this.to_mich(), v.to_mich());
     }
     static from_mich(input: att.Micheline): fight_record {
-        console.log("fight_record.from_mich input:", JSON.stringify(input, null, 2));
+        // console.log("fight_record.from_mich input:", JSON.stringify(input, null, 2));
         try {
             const int_mich_to_date = (x: att.Micheline): Date => {
                 const timestamp = parseInt((x as att.Mint)["int"]) * 1000;
@@ -121,9 +136,9 @@ export class fight_record implements att.ArchetypeType {
             } else {
                 args = (input as att.Mpair).args;
             }
-            console.log("raw timestamp:")
-            console.log(args[0])
-            console.log(mixed_mich_to_date(args[0]))
+            // console.log("raw timestamp:")
+            // console.log(args[0])
+            // console.log(mixed_mich_to_date(args[0]))
 
             const result = new fight_record(
                 mixed_mich_to_date(args[0]),
@@ -133,7 +148,7 @@ export class fight_record implements att.ArchetypeType {
                 att.Nat.from_mich(args[4]),
                 att.mich_to_string(args[5])
             );
-            console.log("fight_record.from_mich result:", JSON.stringify(result, null, 2));
+            // console.log("fight_record.from_mich result:", JSON.stringify(result, null, 2));
             return result;
         } catch (error) {
             console.error("Error in fight_record.from_mich:", error);
@@ -238,6 +253,9 @@ const register_challenger_arg_to_mich = (fighter_id_requested: att.Nat): att.Mic
 const fight_arg_to_mich = (): att.Micheline => {
     return att.unit_mich;
 }
+const reset_activity_arg_to_mich = (): att.Micheline => {
+    return att.unit_mich;
+}
 export class Battlemaster {
     address: string | undefined;
     constructor(address: string | undefined = undefined) {
@@ -273,6 +291,12 @@ export class Battlemaster {
         }
         throw new Error("Contract not initialised");
     }
+    async reset_activity(params: Partial<ex.Parameters>): Promise<att.CallResult> {
+        if (this.address != undefined) {
+            return await ex.call(this.address, "reset_activity", reset_activity_arg_to_mich(), params);
+        }
+        throw new Error("Contract not initialised");
+    }
     async get_toggle_c_mode_param(params: Partial<ex.Parameters>): Promise<att.CallParameter> {
         if (this.address != undefined) {
             return await ex.get_call_param(this.address, "toggle_c_mode", toggle_c_mode_arg_to_mich(), params);
@@ -288,6 +312,12 @@ export class Battlemaster {
     async get_fight_param(params: Partial<ex.Parameters>): Promise<att.CallParameter> {
         if (this.address != undefined) {
             return await ex.get_call_param(this.address, "fight", fight_arg_to_mich(), params);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_reset_activity_param(params: Partial<ex.Parameters>): Promise<att.CallParameter> {
+        if (this.address != undefined) {
+            return await ex.get_call_param(this.address, "reset_activity", reset_activity_arg_to_mich(), params);
         }
         throw new Error("Contract not initialised");
     }
@@ -374,7 +404,20 @@ export class Battlemaster {
         }
         throw new Error("Contract not initialised");
     }
+    register_activity_reset(ep: el.EventProcessor<activity_reset>) {
+        if (this.address != undefined) {
+            el.registerEvent({ source: this.address, filter: tag => { return tag == "activity_reset"; }, process: (raw: any, data: el.EventData | undefined) => {
+                    const event = (x => {
+                        return activity_reset.from_mich((att.normalize(x) as att.Micheline));
+                    })(raw);
+                    ep(event, data);
+                } });
+            return;
+        }
+        throw new Error("Contract not initialised");
+    }
     errors = {
+        reset_challenger_r1: att.string_to_mich("\"Challenger not found.\""),
         OPTION_IS_NONE: att.string_to_mich("\"OPTION_IS_NONE\""),
         NO_CHALLENGER_MAY_FEED_MORE_THAN_100_FIGHTERS_TO_THE_DRAGON: att.string_to_mich("\"No challenger may feed more than 100 fighters to the dragon\""),
         fight_r1: att.string_to_mich("\"You are not a registered challenger.\""),
