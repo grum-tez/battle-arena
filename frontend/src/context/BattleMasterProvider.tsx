@@ -132,7 +132,8 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
         battleMasterContract.register_activity_reset(async (t) => {
           console.log("Activity reset event detected.", t);
           alert(`Activity reset for account - ${t.challenger_address.toString()}`);
-          window.location.reload();
+          setChallenger(null);  // Reset the challenger state
+          await fetchChallenger();  // Refresh the challenger data
         });
 
         battleMasterContract.register_c_mode_updated(async (t) => {
