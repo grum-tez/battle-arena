@@ -1,9 +1,7 @@
-Archetype - Vite - React dApp template devcontainer
+Battle-arena dapp
 
-I didn't get the flextesa sandbox to work - ghostnet is much easier and more similair to production so I would recommend that generally. 
+A few notes:
 
-Before running tests you must:
+- Do not attempt to use the sandbox for development with this dapp - just use g:update and develop on the ghostnet
+- The use of beacon and taquito for subscribing to the wallet pairing and events is out of date in this repo
 
-npx completium-cli mockup init
-
-If you are working with the
