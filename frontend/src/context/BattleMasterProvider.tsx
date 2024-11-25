@@ -174,7 +174,7 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
         })
       }
       startListener()
-    }, [battleMasterContract, account, fetchChallenger])
+    }, [battleMasterContract, account, fetchChallenger, challenger])
 
 
 
