@@ -19,7 +19,7 @@ const WalletProvider = ({ children }: { children: ReactNode }) => {
   const [balance, setBalance] = useState<number>(0)
 
   useEffect(() => {
-    console.log("account", account)
+    // console.log("account", account)
   }, [account])
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const WalletProvider = ({ children }: { children: ReactNode }) => {
         },
       })
       const active = await wallet?.client.getActiveAccount()
-      console.log(active)
+      // console.log(active)
       setAccount(active)
     } catch (e) {
       console.error(e)

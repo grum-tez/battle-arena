@@ -56,11 +56,11 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
       if (!battleMasterContract || !account || !account.address) { return }
-      console.log("[Event Listener] Initializing event listener setup at:", new Date().toISOString())
+      // console.log("[Event Listener] Initializing event listener setup at:", new Date().toISOString())
       const startListener = async () => {
 
         battleMasterContract.register_new_challenger_registered(async (t) => {
-          console.log("Event detected. New challenger registered: ", t)
+          // console.log("Event detected. New challenger registered: ", t)
           // console.log(t.new_challenger_address.toString())
           // console.log(t.new_challenger_fighter_id.toString())
           // console.log(t.new_challenger_fight_history.toString())
@@ -82,7 +82,7 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         battleMasterContract.register_new_fight_recorded(async (t) => {
-          console.log("Fight event detected.", t);
+          // console.log("Fight event detected.", t);
 
           if (!account || account.address !== t.challenger_address.toString()) {
             // console.log("Account does not match the challenger address. Doing nothing.");
@@ -95,7 +95,7 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
 
 
           setChallenger(prevChallenger => {
-            console.log("Previous Challenger: ", prevChallenger);
+            // console.log("Previous Challenger: ", prevChallenger);
             if (prevChallenger) {
               const currentFightHistory = prevChallenger.fightHistory;
               // console.log("Current Fight History: ", currentFightHistory);
@@ -121,20 +121,20 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
                   prevChallenger.c_mode
                 );
               }
-              console.log("Incoming timestamp was not more recent")
+              // console.log("Incoming timestamp was not more recent")
             }
-            console.log("No previous challenger or no update needed.");
+            // console.log("No previous challenger or no update needed.");
             return prevChallenger;
           });
         });
 
         battleMasterContract.register_activity_reset(async (t) => {
-          console.log("Activity reset event detected.", t);
+          // console.log("Activity reset event detected.", t);
           if (!account || account.address !== t.challenger_address.toString() || challenger === null) {
-            console.log("Account does not match the challenger address or challenger is already null. Doing nothing.");
+            // console.log("Account does not match the challenger address or challenger is already null. Doing nothing.");
             return;
           }
-          console.log("Account matches the challenger address and challenger exists. Processing reset.");
+          // console.log("Account matches the challenger address and challenger exists. Processing reset.");
           alert(`Activity reset for account - ${t.challenger_address.toString()}`);
           setChallenger(null);  // Reset the challenger state
           await fetchChallenger();  // Refresh the challenger data
@@ -144,7 +144,7 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
           // console.log("C-Mode update event detected.", t);
 
           if (!account || account.address !== t.challenger_elf.toString()) {
-            console.log("Account does not match the challenger address. Doing nothing.");
+            // console.log("Account does not match the challenger address. Doing nothing.");
             return;
           }
 
@@ -165,7 +165,7 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
           });
         });
 
-        console.log("[Event Listener] Starting run_listener at:", new Date().toISOString());
+        // console.log("[Event Listener] Starting run_listener at:", new Date().toISOString());
         await run_listener({
           endpoint: import.meta.env.VITE_TEZOS_RPC,
           verbose: false,
@@ -182,10 +182,10 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
         return
       }
       const initializeContract = async () => {
-        console.log("Initialising BattleMaster contract")
+        // console.log("Initialising BattleMaster contract")
         const BMcontract = new Battlemaster(import.meta.env.VITE_CONTRACT_ADDRESS)
         setBattleMasterContract(BMcontract)
-        console.log("Initialised contract: ", BMcontract)
+        // console.log("Initialised contract: ", BMcontract)
     }
     initializeContract()
     }, [Tezos])
@@ -198,7 +198,7 @@ const BattleMasterProvider = ({ children }: { children: React.ReactNode }) => {
 
     const registerChallenger = useCallback(
       async (fighterId: number) => {
-        console.log("registering challenger with fighter Id: ", fighterId)
+        // console.log("registering challenger with fighter Id: ", fighterId)
         if (!battleMasterContract || !account || !account.address) {
           return
         }

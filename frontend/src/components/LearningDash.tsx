@@ -13,7 +13,7 @@ const LearningDash: React.FC = () => {
   } = useLearningTasksContext();
 
   if (!currentTask) {
-    console.log('Current Task is undefined or null');
+    // console.log('Current Task is undefined or null');
     return <div>Loading...</div>;
   }
 
