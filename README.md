@@ -12,4 +12,5 @@
 ### Frontend updates:
 - After making updates to the frontend, you can check for compilation errors in the usual way by running yarn build in the frontend workspace/folder. Github actions will run this as part of the automatic deployment action on push to main in any case.
 
-
+### Console errors
+On my last update, I observe errors in the developer console for chrome: `Uncaught (in promise) TypeError: Cannot read properties of null (reading 'domains')`, related to `replaceReferrals.js`, a chrome extension file. I also observed a similair error on the better call dev site, so my current guess it is an issue with the temple wallet extension or something about my local setup. As these didn't effect functionality, I didn't try to chase the bug down. 
